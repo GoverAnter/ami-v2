@@ -9,6 +9,7 @@
 
 using namespace std;
 
+// This is the log line we are waiting for. Feel free to change it to target something else as a serial trigger.
 static const string dirString = "[Client thread/INFO]: [CHAT] [@] ";
 
 bool stringCheck(string tempString) //Checks that I am using the Correct Command/Also used for speed increase

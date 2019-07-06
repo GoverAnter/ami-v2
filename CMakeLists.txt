@@ -3,4 +3,6 @@ project(ami_v2)
 
 set(CMAKE_CXX_STANDARD 14)
 
-add_executable(ami_v2 main.cpp)
+include_directories(SerialPort/include)
+
+add_executable(ami_v2 main.cpp SerialPort/src/SerialPort.cpp)

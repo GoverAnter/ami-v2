@@ -64,9 +64,6 @@ int main(int argc, char *argv[])
             }
         }
 
-        int cmdC = 0; // Iterator
-        bool valCheck = false; // A variable to allow multiple commands from a single line
-        bool pOcheck = false; // A variable used to determine if the port needs to be opened.
         while(readLogs)
         {
             readFile.open("latest.log");
@@ -75,44 +72,27 @@ int main(int argc, char *argv[])
             if(readFile.is_open())
             {
                 // Start cycling through the lines of the file
-                for(int i = 0; i < 50; i++)
-                {
-                    // Pull single lines to read
-                    getline(readFile, bufString);
+                while(std::getline(readFile, bufString)) {
+                    // Remove the timestamp
+                    bufString = bufString.substr(11, bufString.size() - 11);
 
-                    for(int j = 0; j < 33; j++)
-                        bufString[j] = bufString[j+11];
-
-                    // Cycles through String chars
-                    for(unsigned int i2 = 0; i2 < bufString.size(); i2++)
+                    if(stringCheck(bufString))
                     {
-                        // Checks for ! indicator, checks for end of line/end of cmd string,
-                        // checks that of the commands it is only reading the command once
-                        if(bufString[i2] == '!' && !valCheck && stringCheck(bufString))
-                        {
-                            valCheck = true;
-                            i2++;
-                            // This Loop Writes the Command to another string for ease of use.
-                            for(; bufString[i2] != '!'; i2++)
-                            {
-                                // Checks for end of line
-                                if(bufString[i2] == '\0')
-                                    break;
+                        cmdString = bufString.substr(dirStringSize + 1, bufString.size() - dirStringSize - 2);
 
-                                //writes the command to a new string
-                                cmdString[cmdC] = bufString[i2];
-                                cmdC++;
-                                pOcheck = true;
-                            }
-
-                            // Checks for end of line/more commands
-                            if(bufString[i2 + 1] != '\0')
-                                valCheck = false;
+                        if(useSerial) {
+                            char* cmd = _strdup(cmdString.c_str());
+                            serial->writeSerialPort(cmd, strlen(cmd));
                         }
+
+                        std::cout << "Sent command " << cmdString.c_str() << std::endl;
                     }
                     cmdC = 0;
                     valCheck = false;
                 }
+
+                // Safely close the file
+                readFile.close();
             }
 
             // Safely Close File

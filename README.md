@@ -10,6 +10,12 @@ The original idea and part of this code is not mine !
 
 It simply parses the Minecraft logs, searching for a specific pattern (in this case, a `/say` emitted by a command block), and sends the argument to Arduino using serial communication.
 
+#### Arguments
+
+`--no-serial` : disables serial communication with arduino, but still reads the log file and outputs results to the console.
+
+`--no-log-read` : does not try to read the log file.
+
 ## Dependencies
 
 Only dependency is `SerialPort`, which is included as a git submodule in this repository.

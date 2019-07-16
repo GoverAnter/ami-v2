@@ -16,6 +16,8 @@ It simply parses the Minecraft logs, searching for a specific pattern (in this c
 
 `--no-log-read` : does not try to read the log file.
 
+`--no-autoclean` : by default, the log file is cleared each time it is read. Use this option to prevent this behaviour.
+
 ## Dependencies
 
 Only dependency is `SerialPort`, which is included as a git submodule in this repository.

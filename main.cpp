@@ -6,18 +6,18 @@
 #include <SerialPort.h>
 
 // This is the log line we are waiting for. Feel free to change it to target something else as a serial trigger.
-static const std::string dirString = "[Client thread/INFO]: [CHAT] [@] ";
-static const unsigned int dirStringSize = dirString.size();
+#define DIR_STR "[Client thread/INFO]: [CHAT] [@] "
+#define DIR_STR_LEN strlen(DIR_STR)
 
 bool stringCheck(const std::string& tempString) //Checks that I am using the Correct Command/Also used for speed increase
 {
-    if(tempString.size() < dirStringSize) {
+    if(tempString.size() < DIR_STR_LEN) {
         return false;
     }
 
-    for(unsigned int i = 0; i < dirStringSize; i++)
+    for(unsigned int i = 0; i < DIR_STR_LEN; i++)
     {
-        if(dirString[i] != tempString[i])
+        if(DIR_STR[i] != tempString[i])
             return false;
     }
 
@@ -85,7 +85,7 @@ int main(int argc, char *argv[])
 
                     if(stringCheck(bufString))
                     {
-                        cmdString = bufString.substr(dirStringSize + 1, bufString.size() - dirStringSize - 2);
+                        cmdString = bufString.substr(DIR_STR_LEN + 1, bufString.size() - DIR_STR_LEN - 2);
 
                         if(useSerial) {
                             char* cmd = _strdup(cmdString.c_str());

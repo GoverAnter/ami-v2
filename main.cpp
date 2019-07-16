@@ -7,18 +7,21 @@
 
 // This is the log line we are waiting for. Feel free to change it to target something else as a serial trigger.
 static const std::string dirString = "[Client thread/INFO]: [CHAT] [@] ";
+static const unsigned int dirStringSize = dirString.size();
 
-bool stringCheck(std::string tempString) //Checks that I am using the Correct Command/Also used for speed increase
+bool stringCheck(const std::string& tempString) //Checks that I am using the Correct Command/Also used for speed increase
 {
-    //string dirString = "[23:43:08] [Client thread/INFO]: [CHAT] [@] ";
-    unsigned int charCount = 0;
-    for(unsigned int i = 0; i < dirString.size(); i++)
-    {
-        if(dirString[i] == tempString[i])
-            charCount++;
+    if(tempString.size() < dirStringSize) {
+        return false;
     }
 
-    return charCount == 33;
+    for(unsigned int i = 0; i < dirStringSize; i++)
+    {
+        if(dirString[i] != tempString[i])
+            return false;
+    }
+
+    return true;
 }
 
 static SerialPort* serial = nullptr;
@@ -31,6 +34,8 @@ int main(int argc, char *argv[])
         bool useSerial = true;
         // Read the log file only if this flag is true
         bool readLogs = true;
+        // Whether to delete log file content after reading it. Will speed up processing if running for a long time.
+        bool autoClean = true;
 
         if(argc > 0) {
             for(int i = 1; i < argc; i++) {
@@ -38,6 +43,8 @@ int main(int argc, char *argv[])
                     useSerial = false;
                 } else if(strcmp(argv[i], "--no-log-read") == 0) {
                     readLogs = false;
+                } else if(strcmp(argv[i], "--no-autoclean") == 0) {
+                    autoClean = false;
                 }
             }
         }
@@ -87,30 +94,16 @@ int main(int argc, char *argv[])
 
                         std::cout << "Sent command " << cmdString.c_str() << std::endl;
                     }
-                    cmdC = 0;
-                    valCheck = false;
                 }
 
                 // Safely close the file
                 readFile.close();
             }
 
-            // Safely Close File
-            readFile.close();
-
-            if(pOcheck)
-            {
+            // If we need to clean the log file
+            if(autoClean) {
                 std::ofstream erase("latest.log");
                 erase.close();
-
-                if(useSerial) {
-                    char* cmd = _strdup(cmdString.data());
-                    serial->writeSerialPort(cmd, strlen(cmd));
-                }
-
-                std::cout << "Sent command " << cmdString.data() << std::endl;
-
-                pOcheck = false;
             }
 
             Sleep(50);

@@ -55,7 +55,7 @@ int main(int argc, char *argv[])
 
         if(useSerial) {
             std::string port;
-            std::cout << "Please Enter Your Arduino's Port Number: ";
+            std::cout << "Please enter your Arduino's port (generally '//./COMX'): ";
             std::cin >> port;
 
             std::vector<char> cstr(port.c_str(), port.c_str() + port.size() + 1);
